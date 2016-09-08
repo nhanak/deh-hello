@@ -1,6 +1,6 @@
-# [Material-UI](http://callemall.github.io/material-ui/) - Example Webpack Project
-
-This is an example project that uses [Material-UI](http://callemall.github.io/material-ui/).
+# deh-hello
+Twilio powered mass messaging WebApp (Node.js, React, MongoDB).
+A fork of https://github.com/callemall/material-ui-webpack-example/
 
 ## Installation
 
