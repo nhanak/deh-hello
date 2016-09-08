@@ -1,6 +1,5 @@
 # deh-hello
 Twilio powered mass messaging WebApp (Node.js, React, MongoDB).
-A fork of https://github.com/callemall/material-ui-webpack-example/
 
 ## Installation
 
