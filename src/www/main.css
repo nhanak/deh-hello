@@ -5,4 +5,28 @@ html {
 body {
   font-size: 13px;
   line-height: 20px;
+  background-color: #263238;
+  color: white;
+}
+
+input[type=text], input[type=password]{
+  border: 2px solid gainsboro;
+  -webkit-box-shadow:
+          inset 0 0 8px  rgba(0,0,0,0.1),
+          0 0 16px rgba(0,0,0,0.1);
+  -moz-box-shadow:
+          inset 0 0 8px  rgba(0,0,0,0.1),
+          0 0 16px rgba(0,0,0,0.1);
+  box-shadow:
+          inset 0 0 8px  rgba(0,0,0,0.1),
+          0 0 16px rgba(0,0,0,0.1);
+  padding: 15px;
+  background: rgba(0,0,0,0.4);
+  margin: 0 0 10px 0;
+  color:white
+}
+
+.login-form{
+  width: 145px;
+  padding-top: 80px;
 }
