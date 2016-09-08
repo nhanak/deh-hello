@@ -6,7 +6,7 @@ A fork of https://github.com/callemall/material-ui-webpack-example/
 
 After cloning the repository, install dependencies:
 ```sh
-cd <project folder>/material-ui/examples/webpack-example
+cd <project folder>
 npm install
 ```
 
