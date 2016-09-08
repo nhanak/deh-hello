@@ -5,7 +5,8 @@
 import React, {Component} from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
-import {deepOrange500} from 'material-ui/styles/colors';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import {blue50} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -17,67 +18,59 @@ const styles = {
   },
 };
 
-const muiTheme = getMuiTheme({
-  palette: {
-    accent1Color: deepOrange500,
+/*
+ Set the theme colors
+ */
+darkBaseTheme.palette.accent1Color = blue50;
+const muiTheme = getMuiTheme(darkBaseTheme);
+
+/*
+ LoginForm
+ */
+var LoginForm = React.createClass({
+  getInitialState: function() {
+    return {logged_in: false}
   },
+  render: function(){
+    return (
+        <div class="login-form">
+        <h1>Login</h1>
+        <form>
+        <p><input type='text' className='username' placeholder="Username"/></p>
+        <p><input type='password' className='password' placeholder="Password"/></p>
+        </form>
+        <RaisedButton
+    label="Login"
+    secondary={true}
+    onTouchTap={this.handleLogin}
+    />
+    </div>
+    );
+  }
 });
 
-class Main extends Component {
-  constructor(props, context) {
-    super(props, context);
-
-    this.handleRequestClose = this.handleRequestClose.bind(this);
-    this.handleTouchTap = this.handleTouchTap.bind(this);
-
-    this.state = {
-      open: false,
-    };
+var Frame = React.createClass({
+  handleLogin: function(){
+    return {logged_in: true}
+  },
+  getInitialState: function() {
+    return {logged_in: false}
+  },
+  render: function(){
+    return <LoginForm handleLogin="this.handleLogin"/>;
   }
+});
 
-  handleRequestClose() {
-    this.setState({
-      open: false,
-    });
-  }
-
-  handleTouchTap() {
-    this.setState({
-      open: true,
-    });
-  }
-
-  render() {
-    const standardActions = (
-      <FlatButton
-        label="Ok"
-        primary={true}
-        onTouchTap={this.handleRequestClose}
-      />
-    );
-
+var Main = React.createClass({
+  render: function() {
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
+        <MuiThemeProvider muiTheme={muiTheme}>
         <div style={styles.container}>
-          <Dialog
-            open={this.state.open}
-            title="Super Secret Password"
-            actions={standardActions}
-            onRequestClose={this.handleRequestClose}
-          >
-            1-2-3-4-5
-          </Dialog>
-          <h1>Material-UI</h1>
-          <h2>example project</h2>
-          <RaisedButton
-            label="Super Secret Password"
-            secondary={true}
-            onTouchTap={this.handleTouchTap}
-          />
-        </div>
-      </MuiThemeProvider>
+    <Frame/>
+    </div>
+    </MuiThemeProvider>
     );
   }
-}
+});
 
 export default Main;
