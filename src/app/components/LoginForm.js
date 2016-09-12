@@ -12,7 +12,7 @@ var LoginForm = React.createClass({
     },
     render: function(){
         return (
-            <div class="login-form">
+            <div>
             <h1>Login</h1>
             <form>
             <p><input type='text' className='username' placeholder="Username"/></p>
