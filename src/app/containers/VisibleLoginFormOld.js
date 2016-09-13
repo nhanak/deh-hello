@@ -28,9 +28,9 @@ var mapStateToProps = function(state){
     return {LOGIN_STATUS:state.loginStatus};
 };
 
-const VisibleLoginForm = connect(
+const VisibleLoginFormOld = connect(
     mapStateToProps,
     mapDispatchToProps
-)(LoginForm);
+)(LoginFormOld);
 
-export default VisibleLoginForm
+export default VisibleLoginFormOld

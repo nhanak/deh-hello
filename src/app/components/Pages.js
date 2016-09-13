@@ -11,8 +11,7 @@ import darkBaseTheme from '../../../node_modules/material-ui/styles/baseThemes/d
 import {blue50} from '../../../node_modules/material-ui/styles/colors';
 import getMuiTheme from '../../../node_modules/material-ui/styles/getMuiTheme';
 import MuiThemeProvider from '../../../node_modules/material-ui/styles/MuiThemeProvider';
-import VisibleLoginForm from '../containers/VisibleLoginForm';
-import VisibleHomeBar from '../containers/VisibleHomeBar';
+import VisibleLoginFormOld from '../containers/VisibleLoginFormOld';
 import RaisedButton from 'material-ui/RaisedButton';
 
 
