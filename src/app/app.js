@@ -5,41 +5,38 @@ import {LoginPage, HomePage, FourOhFourPage} from './components/Pages'; // Our c
 import { createStore } from 'redux' //Redux
 import { Provider } from 'react-redux'
 import dehHelloApp from './reducers'
-import { Router, Route, Link, browserHistory, Redirect} from 'react-router';//react-routers so we can do routes
+import { Route, Link, browserHistory, Redirect} from 'react-router';//react-routers so we can do routes
+import ReactStormpath, { Router, AuthenticatedRoute, LoginRoute, HomeRoute } from 'react-stormpath'; //Stormpath
 import { LoginStatus } from './actions'
+// Create the redux store
+let store = createStore(dehHelloApp);
+
+ReactStormpath.init({
+    dispatcher: {
+        type: 'redux',
+        store: store
+    }
+});
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
-// Render the main app react component into the app div.
-// For more details see: https://facebook.github.io/react/docs/top-level-api.html#react.render
 export const getRoutes = function(store) {
     return (<div>
-                <Route path="/" component={HomePage} onEnter={checkAuthentication}/>
-                <Route path="/login" component={LoginPage} />
+                <LoginRoute path="/login" component={LoginPage} />
                 <Route path="/404" component={FourOhFourPage}/>
+                <AuthenticatedRoute>
+                    <HomeRoute path='/' component={HomePage} />
+                </AuthenticatedRoute>
+                <HomeRoute path='/login' component={LoginPage} />
                 <Redirect from='*' to='/404' />
             </div>
     );
 };
 
-// Function that checks if we are authenticated
-let checkAuthentication = (nextState, replace)=> {
-    if (store.getState().loginStatus != LoginStatus.LOGGED_IN) {
-        // Not authenticated, redirect to login.
-        console.log('We are not logged in');
-        replace('/login');
-    }
-    else {
-        console.log('We are logged in');
-    }
-};
-
-// Create the redux store
-let store = createStore(dehHelloApp);
-
-//Render the application
+// Render the main app react component into the app div.
+// For more details see: https://facebook.github.io/react/docs/top-level-api.html#react.render
 render((<Provider store={ store }>
             <Router history={browserHistory }>
                 { getRoutes(store) }

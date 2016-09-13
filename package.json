@@ -1,14 +1,14 @@
 {
-  "name": "material-ui-example-webpack",
+  "name": "deh-hello",
   "version": "0.15.0",
-  "description": "Sample project that uses Material-UI",
+  "description": "Twilio powered mass messaging WebApp (Node.js, React, MongoDB)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/callemall/material-ui.git"
+    "url": "git+https://github.com/nhanak/deh-hello"
   },
   "scripts": {
     "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
-    "build": "webpack --config webpack-production.config.js --progress --colors"
+    "build": "webpack -p --config webpack-production.config.js --progress --colors"
   },
   "private": true,
   "devDependencies": {
@@ -24,12 +24,22 @@
     "webpack-dev-server": "^1.14.0"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "express-stormpath": "^3.1.5",
     "material-ui": "^0.15.0",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.8.0",
+    "react-stormpath": "^1.3.1",
     "react-tap-event-plugin": "^1.0.0",
     "redux": "^3.6.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/nhanak/deh-hello/issues"
+  },
+  "homepage": "https://github.com/nhanak/deh-hello#readme",
+  "main": "webpack-dev-server.config.js",
+  "author": "",
+  "license": "ISC"
 }
