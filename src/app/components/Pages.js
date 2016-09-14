@@ -8,24 +8,37 @@
 import React, {Component} from 'react';
 import { LoginForm, LogoutLink } from 'react-stormpath';
 import darkBaseTheme from '../../../node_modules/material-ui/styles/baseThemes/darkBaseTheme';
-import {blue50} from '../../../node_modules/material-ui/styles/colors';
+import {lightGreenA100,lightGreenA400,lightGreenA200,cyan700} from '../../../node_modules/material-ui/styles/colors';
 import getMuiTheme from '../../../node_modules/material-ui/styles/getMuiTheme';
 import MuiThemeProvider from '../../../node_modules/material-ui/styles/MuiThemeProvider';
 import VisibleLoginFormOld from '../containers/VisibleLoginFormOld';
 import RaisedButton from 'material-ui/RaisedButton';
+import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
+import MenuItem from 'material-ui/MenuItem';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import { StickyContainer, Sticky } from 'react-sticky';
 
 
 const styles = {
     container: {
         textAlign: 'center',
-        paddingTop: 200,
+        paddingTop: 50,
     },
+    loginContainer:{
+        textAlign: 'center',
+        paddingTop: 100,
+    }
 };
 
 /*
  Set the theme colors
  */
-darkBaseTheme.palette.accent1Color = blue50;
+//darkBaseTheme.palette.accent1Color = lightGreenA200;
+darkBaseTheme.palette.accent2Color = cyan700;
+//darkBaseTheme.palette.accent3Color = lightGreenA100;
+darkBaseTheme.palette.primary1Color =lightGreenA400;
+//darkBaseTheme.palette.primary2Color = blueGrey700;
+//darkBaseTheme.palette.primary3Color = blueGrey600;
 const muiTheme = getMuiTheme(darkBaseTheme);
 
 var LoginPageOld = React.createClass({
@@ -44,7 +57,7 @@ var LoginPage = React.createClass({
     render: function() {
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
-                <div style={styles.container}>
+                <div style={styles.loginContainer}>
                     <LoginForm>
                         <h1>Login</h1>
                         <p>
@@ -80,12 +93,41 @@ var FourOhFourPage = React.createClass({
 });
 
 var HomePage = React.createClass({
+    getInitialState () {
+        return {
+            value:1,
+        };
+    },
+    getDefaultProps() {
+        return {
+            handleChange: (event, index, value) => this.setState({value})
+        }
+    },
     render: function() {
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
-                <div style={styles.container}>
-                    <p>Welcome home!</p>
-                    <LogoutLink>Logout</LogoutLink>
+                <div>
+                    <StickyContainer>
+                        <Sticky>
+                            <Toolbar>
+                                <ToolbarGroup firstChild={true}>
+                                    <DropDownMenu value={this.state.value} onChange={this.handleChange}>
+                                        <MenuItem value={1} primaryText="Home" />
+                                        <MenuItem value={2} primaryText="Inbox" />
+                                    </DropDownMenu>
+                                </ToolbarGroup>
+                                <ToolbarGroup>
+                                        <RaisedButton label="Logout" secondary={true} href="/logout"/>
+                                </ToolbarGroup>
+                            </Toolbar>
+                        </Sticky>
+                        <div style={styles.container}>
+                            <h1>Message</h1>
+                            <textarea rows="10" cols="50" placeholder="Enter message"/>
+                            <p></p>
+                            <RaisedButton label="Send" secondary={true} type="submit" value="Send" />
+                        </div>
+                    </StickyContainer>
                 </div>
             </MuiThemeProvider>
         );

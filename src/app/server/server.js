@@ -19,6 +19,9 @@ app.use(stormpath.init(app, {
         spa: {
             enabled: true,
             view: path.resolve(__dirname, '../../../', 'build/index.html')
+        },
+        register: {
+            enabled: false
         }
     }
 }));
@@ -28,7 +31,11 @@ app.use(express.static('../../../build'));
 app.get('*', function(req, res) {
     res.sendFile(path.resolve(__dirname, '../../../', 'build/index.html'));
 });
-
+// Logout the user, then redirect to the home page.
+//app.get('/logout', function(req, res) {
+//    req.logout();
+//    res.redirect('/');
+//});
 var startServer = function(){
     var port = 3000;
     console.log('The server is listening on: '+port)

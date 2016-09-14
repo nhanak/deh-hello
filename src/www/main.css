@@ -1,3 +1,9 @@
+*, html {
+  margin:0;
+  padding:0;
+  font-family: 'Roboto', sans-serif;
+}
+
 html {
   font-family: 'Roboto', sans-serif;
 }
@@ -5,11 +11,11 @@ html {
 body {
   font-size: 13px;
   line-height: 20px;
-  background-color: #263238;
-  color: white;
+  background-color: #212121;
+  color: #eceff1;
 }
 
-input[type=text], input[type=password]{
+input[type=text], input[type=password], textarea{
   border: 2px solid gainsboro;
   -webkit-box-shadow:
           inset 0 0 8px  rgba(0,0,0,0.1),
@@ -21,12 +27,35 @@ input[type=text], input[type=password]{
           inset 0 0 8px  rgba(0,0,0,0.1),
           0 0 16px rgba(0,0,0,0.1);
   padding: 15px;
-  background: rgba(0,0,0,0.4);
+  background: #eeeeee;
   margin: 0 0 10px 0;
-  color:white
+  color:#000
 }
 
 .login-form{
   width: 145px;
   padding-top: 80px;
+}
+
+header{
+  text-align: center;
+  font-size: 40px;
+  line-height: 70px;
+  height: 70px;
+  background: #0097a7;
+  color: #fff;
+}
+
+h1{
+  padding-bottom: 1%;
+  font-size: 20px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  color:#fff
+}
+
+.mass-message-box{
+  height:10px;
+  width:200px;
+  font-weight: 300;
 }
