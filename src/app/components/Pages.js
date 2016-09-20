@@ -17,12 +17,27 @@ import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import { StickyContainer, Sticky } from 'react-sticky';
-
+import RecipientsTable from './RecipientsTable';
 
 const styles = {
     container: {
         textAlign: 'center',
         paddingTop: 50,
+    },
+    headerPadding:{
+      paddingBottom:25,
+    },
+    recipientsContainer: {
+        textAlign: 'center',
+        paddingTop: 50,
+        paddingRight:150,
+        float:'right',
+    },
+    messageContainer: {
+        textAlign: 'center',
+        paddingTop: 50,
+        float:'left',
+        paddingLeft:700,
     },
     loginContainer:{
         textAlign: 'center',
@@ -121,11 +136,17 @@ var HomePage = React.createClass({
                                 </ToolbarGroup>
                             </Toolbar>
                         </Sticky>
-                        <div style={styles.container}>
-                            <h1>Message</h1>
-                            <textarea rows="10" cols="50" placeholder="Enter message"/>
-                            <p></p>
-                            <RaisedButton label="Send" secondary={true} type="submit" value="Send" />
+                        <div>
+                            <div style={styles.recipientsContainer}>
+                                <h1>Recipients</h1>
+                                <RecipientsTable/>
+                            </div>
+                            <div style={styles.messageContainer}>
+                                <h1 style={styles.headerPadding}>Message</h1>
+                                <textarea rows="10" cols="50" placeholder="Enter message"/>
+                                <p></p>
+                                <RaisedButton label="Send" secondary={true} type="submit" value="Send" />
+                            </div>
                         </div>
                     </StickyContainer>
                 </div>

@@ -27,9 +27,7 @@ export const getRoutes = function(store) {
                 <LoginRoute path="/login" component={LoginPage} />
                 <Route path="/404" component={FourOhFourPage}/>
                 <LogoutRoute path="/logout"/>
-                <AuthenticatedRoute>
-                    <HomeRoute path='/' component={HomePage} />
-                </AuthenticatedRoute>
+                <Route path='/' component={HomePage} />
                 <HomeRoute path='/login' component={LoginPage} />
                 <Redirect from='*' to='/404' />
             </div>
