@@ -27,47 +27,64 @@ const styles = {
 };
 
 const RecipientsTable= React.createClass({
+    getInitialState: function() {
+        return {
+            recipients: this.props.recipients,
+            recipientNumber: "",
+            selectedRows: [],
+        };
+    },
+
+    handleRecipientNumberChange: function(evt) {
+        this.setState({
+            recipientNumber: evt.target.value
+        });
+    },
+
+    resetRecipientNumber: function() {
+        this.setState({
+            recipientNumber: ""
+        });
+    },
+
+    _onRowSelection:function(selectedRowz){
+      this.setState({
+          selectedRows: selectedRowz
+      });
+    },
+
+    removeSelected:function(){
+        //remove the element at the index, the following index must then be decreased by one*amount removed
+        var amountRemoved = 0;
+        for (var index in this.state.selectedRows){
+            //console.log('The index is: '+index);
+            this.props.removeRecipient(index,amountRemoved);
+            amountRemoved += 1;
+        }
+    },
     render: function () {
         return(
         <div>
             <div style={styles.tableContainer}>
-                <Table height="250" multiSelectable={true}>
-                    <TableHeader>
+                <Table height="250px" multiSelectable={true} onRowSelection={this._onRowSelection}>
+                    <TableHeader displaySelectAll={false}>
                         <TableRow>
                             <TableHeaderColumn>Phone Number</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow>
-                            <TableRowColumn>7804734910</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>7804734910</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>7804734910</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>7804734910</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>7804734910</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>7804734910</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>7804734910</TableRowColumn>
-                        </TableRow>
-
+                        {this.props.recipients.map( (row, index) => (
+                            <TableRow key={index} selected={this.state.selectedRows.indexOf(index) !== -1}>
+                                <TableRowColumn>{row}</TableRowColumn>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
-            </div>
-                <input type="text" name="phone_number" placeholder="Recipients phone number" style={styles.recipientsNumberContainer} />
+                </div>
+                <input value={this.state.recipientNumber} type="text" name="phone_number" placeholder="Recipients phone number" style={styles.recipientsNumberContainer} onChange={this.handleRecipientNumberChange}/>
             <div style={styles.buttonContainer}>
-                <RaisedButton label="Add" primary={true} type="submit" value="Send" style={styles.buttonSpacer} />
-                <RaisedButton label="Remove Selected" secondary={true} type="submit" value="Remove"
-                              onClick={this.removeSelectedRows}/>
+                <RaisedButton label="Add" primary={true} type="submit" value="Send" style={styles.buttonSpacer}  onTouchTap={() =>{this.props.addRecipient(this.state.recipientNumber,this.resetRecipientNumber)}}/>
+                <RaisedButton label="Remove Selected" secondary={true} onTouchTap={this.removeSelected}/>
             </div>
         </div>
         )

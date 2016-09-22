@@ -107,17 +107,44 @@ var FourOhFourPage = React.createClass({
     }
 });
 
+//The HomePage owns RecipientTable. As such, it controls
+//the props of RecipientTable. Basically, RecipientTable gathers
+//the required data and HomePage stores it in its own state, which
+//the RecipientTable can see through its props
 var HomePage = React.createClass({
     getInitialState () {
         return {
-            value:1,
+            recipients:[],
         };
     },
+
     getDefaultProps() {
         return {
-            handleChange: (event, index, value) => this.setState({value})
+            handleChange: (event, index, value) => this.setState({value}),
         }
     },
+
+    addRecipient(recipientNumber,resetRecipientNumber){
+        console.log('Add recipient button was pressed')
+        if (recipientNumber.match(/^[+][0-9]+$/)!=null) {
+            this.setState({
+                recipients: this.state.recipients.concat(recipientNumber)
+            });
+            resetRecipientNumber();
+        }
+    },
+
+    removeRecipient(index,amountRemoved){
+        this.state.recipients.splice(index-amountRemoved,1);
+    },
+
+    sendMessage(){
+        console.log('Sent the message to recipients: '+this.state.recipients)
+      this.setState({
+          recipients:[]
+      })
+    },
+
     render: function() {
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
@@ -139,13 +166,13 @@ var HomePage = React.createClass({
                         <div>
                             <div style={styles.recipientsContainer}>
                                 <h1>Recipients</h1>
-                                <RecipientsTable/>
+                                <RecipientsTable messageSent={this.state.messageSent} recipients={this.state.recipients} addRecipient={this.addRecipient} removeRecipient={this.removeRecipient}/>
                             </div>
                             <div style={styles.messageContainer}>
                                 <h1 style={styles.headerPadding}>Message</h1>
                                 <textarea rows="10" cols="50" placeholder="Enter message"/>
                                 <p></p>
-                                <RaisedButton label="Send" secondary={true} type="submit" value="Send" />
+                                <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
                             </div>
                         </div>
                     </StickyContainer>
