@@ -6,7 +6,7 @@ import { createStore } from 'redux' //Redux
 import { Provider } from 'react-redux'
 import dehHelloApp from './reducers'
 import { Route, Link, browserHistory, Redirect} from 'react-router';//react-routers so we can do routes
-import ReactStormpath, { Router, AuthenticatedRoute, LoginRoute, HomeRoute, LogoutRoute } from 'react-stormpath'; //Stormpath
+import ReactStormpath, { Router, AuthenticatedRoute, LoginRoute, HomeRoute, LogoutRoute,UserProfileForm } from 'react-stormpath'; //Stormpath
 import { LoginStatus } from './actions'
 // Create the redux store
 let store = createStore(dehHelloApp);
@@ -28,6 +28,9 @@ export const getRoutes = function(store) {
                 <Route path="/404" component={FourOhFourPage}/>
                 <LogoutRoute path="/logout"/>
                 <Route path='/' component={HomePage} />
+                <AuthenticatedRoute>
+                    <Route path="/me" component={UserProfileForm} />
+                </AuthenticatedRoute>
                 <HomeRoute path='/login' component={LoginPage} />
                 <Redirect from='*' to='/404' />
             </div>

@@ -115,6 +115,7 @@ var HomePage = React.createClass({
     getInitialState () {
         return {
             recipients:[],
+            message:''
         };
     },
 
@@ -125,7 +126,6 @@ var HomePage = React.createClass({
     },
 
     addRecipient(recipientNumber,resetRecipientNumber){
-        console.log('Add recipient button was pressed')
         if (recipientNumber.match(/^[+][0-9]+$/)!=null) {
             this.setState({
                 recipients: this.state.recipients.concat(recipientNumber)
@@ -138,11 +138,27 @@ var HomePage = React.createClass({
         this.state.recipients.splice(index-amountRemoved,1);
     },
 
+    handleMessageChange(evt){
+        this.setState({
+            message: evt.target.value
+        });
+    },
+
     sendMessage(){
-        console.log('Sent the message to recipients: '+this.state.recipients)
-      this.setState({
-          recipients:[]
-      })
+        if (this.state.message.length!==0){
+            if(this.state.recipients.length!==0) {
+                var twilioMessage={
+                    message: this.state.message,
+                    recipients:this.state.recipients
+                };
+                jQuery.post('/api/messages',twilioMessage);
+                alert('Message succesfully sent!');
+                this.setState({
+                    recipients: [],
+                    message: ''
+                })
+            }
+        }
     },
 
     render: function() {
@@ -170,7 +186,7 @@ var HomePage = React.createClass({
                             </div>
                             <div style={styles.messageContainer}>
                                 <h1 style={styles.headerPadding}>Message</h1>
-                                <textarea rows="10" cols="50" placeholder="Enter message"/>
+                                <textarea rows="10" cols="50" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
                                 <p></p>
                                 <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
                             </div>
