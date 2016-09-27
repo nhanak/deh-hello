@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import {LoginPage, HomePage, FourOhFourPage} from './components/Pages'; // Our custom react component
+import {LoginPage, HomePage, FourOhFourPage, InboxPage} from './components/Pages'; // Our custom react component
 import { createStore } from 'redux' //Redux
 import { Provider } from 'react-redux'
 import dehHelloApp from './reducers'
@@ -28,9 +28,6 @@ export const getRoutes = function(store) {
                 <Route path="/404" component={FourOhFourPage}/>
                 <LogoutRoute path="/logout"/>
                 <Route path='/' component={HomePage} />
-                <AuthenticatedRoute>
-                    <Route path="/me" component={UserProfileForm} />
-                </AuthenticatedRoute>
                 <HomeRoute path='/login' component={LoginPage} />
                 <Redirect from='*' to='/404' />
             </div>

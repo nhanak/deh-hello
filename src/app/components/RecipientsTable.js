@@ -8,7 +8,7 @@ const styles = {
     tableContainer: {
         width: 300,
         overflow: 'hidden',
-        margin: '20px auto 0',
+        margin: '5px auto 0',
     },
     buttonContainer: {
         margin:'10px 0 0 0',

@@ -18,6 +18,7 @@ import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import { StickyContainer, Sticky } from 'react-sticky';
 import RecipientsTable from './RecipientsTable';
+import InboxTable from './InboxTable';
 
 const styles = {
     container: {
@@ -25,19 +26,20 @@ const styles = {
         paddingTop: 50,
     },
     headerPadding:{
-      paddingBottom:25,
+      paddingBottom:10,
     },
+
     recipientsContainer: {
         textAlign: 'center',
-        paddingTop: 50,
+        paddingTop: 20,
         paddingRight:150,
         float:'right',
     },
     messageContainer: {
         textAlign: 'center',
-        paddingTop: 50,
+        paddingTop: 20,
         float:'left',
-        paddingLeft:700,
+        paddingLeft:650,
     },
     loginContainer:{
         textAlign: 'center',
@@ -107,15 +109,66 @@ var FourOhFourPage = React.createClass({
     }
 });
 
-//The HomePage owns RecipientTable. As such, it controls
-//the props of RecipientTable. Basically, RecipientTable gathers
-//the required data and HomePage stores it in its own state, which
-//the RecipientTable can see through its props
+/*
+    HomePage: Container class. Contains a toolbar with
+    content that can be changed from the menu
+ */
 var HomePage = React.createClass({
     getInitialState () {
         return {
+            content: <Home/>,
+            messages:jQuery.get('/api/messages')
+        };
+    },
+    handlePageChange(event,index,value){
+        if (value===1){
+            this.setState({
+                content: <Home/>
+            });
+        }
+        if (value===2){
+            this.setState({
+                content: <Inbox messages={this.state.messages}/>
+            });
+        }
+    },
+    render: function() {
+        return (
+            <MuiThemeProvider muiTheme={muiTheme}>
+                <div>
+                    <StickyContainer>
+                        <Sticky>
+                            <Toolbar>
+                                <ToolbarGroup firstChild={true}>
+                                    <DropDownMenu value={this.state.value} onChange={this.handlePageChange}>
+                                        <MenuItem value={1} primaryText="Home" />
+                                        <MenuItem value={2} primaryText="Inbox" />
+                                    </DropDownMenu>
+                                </ToolbarGroup>
+                                <ToolbarGroup>
+                                        <RaisedButton label="Logout" secondary={true} href="/logout"/>
+                                </ToolbarGroup>
+                            </Toolbar>
+                        </Sticky>
+                        {this.state.content}
+                    </StickyContainer>
+                </div>
+            </MuiThemeProvider>
+        );
+    }
+});
+
+/*
+    Home: owns RecipientTable. As such, it controls
+    the props of RecipientTable. Basically, RecipientTable gathers
+    the required data and Home stores it in its own state, which
+    the RecipientTable can see through its props
+ */
+var Home = React.createClass({
+    getInitialState () {
+        return {
             recipients:[],
-            message:''
+            message:'',
         };
     },
 
@@ -160,41 +213,51 @@ var HomePage = React.createClass({
             }
         }
     },
+   render(){
+       return(
+           <div>
+               <div style={styles.recipientsContainer}>
+                   <h1>Recipients</h1>
+                   <RecipientsTable messageSent={this.state.messageSent} recipients={this.state.recipients} addRecipient={this.addRecipient} removeRecipient={this.removeRecipient}/>
+               </div>
+               <div style={styles.messageContainer}>
+                   <h1 style={styles.headerPadding}>Message</h1>
+                   <textarea rows="10" cols="50" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
+                   <p></p>
+                   <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
+               </div>
+           </div>
+       );
+
+   }
+});
+
+/*
+    Inbox: Shows the recent activity on this
+    accounts sms messages
+ */
+var Inbox = React.createClass({
+    viewConversation(phoneNumber){
+        this.setState({
+            content:<Conversation/>,
+            conversationPhoneNumber:phoneNumber
+        });
+    },
+
+    getInitialState(){
+        return({
+            content:<InboxTable viewConversation={this.viewConversation} messages={this.props.messages}/>,
+            conversationPhoneNumber:''
+        });
+    },
 
     render: function() {
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
-                <div>
-                    <StickyContainer>
-                        <Sticky>
-                            <Toolbar>
-                                <ToolbarGroup firstChild={true}>
-                                    <DropDownMenu value={this.state.value} onChange={this.handleChange}>
-                                        <MenuItem value={1} primaryText="Home" />
-                                        <MenuItem value={2} primaryText="Inbox" />
-                                    </DropDownMenu>
-                                </ToolbarGroup>
-                                <ToolbarGroup>
-                                        <RaisedButton label="Logout" secondary={true} href="/logout"/>
-                                </ToolbarGroup>
-                            </Toolbar>
-                        </Sticky>
-                        <div>
-                            <div style={styles.recipientsContainer}>
-                                <h1>Recipients</h1>
-                                <RecipientsTable messageSent={this.state.messageSent} recipients={this.state.recipients} addRecipient={this.addRecipient} removeRecipient={this.removeRecipient}/>
-                            </div>
-                            <div style={styles.messageContainer}>
-                                <h1 style={styles.headerPadding}>Message</h1>
-                                <textarea rows="10" cols="50" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
-                                <p></p>
-                                <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
-                            </div>
-                        </div>
-                    </StickyContainer>
-                </div>
+                {this.state.content}
             </MuiThemeProvider>
         );
     }
 });
+
 export {LoginPage, FourOhFourPage, HomePage};

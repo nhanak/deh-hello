@@ -52,12 +52,79 @@ app.post('/api/messages',function(req,res){
     var message = req.body.message;
     for (var recipient in recipients){
         console.log('User wants to message: '+recipients[recipient]);
-        console.log('with message'+message);
+        console.log('with message: '+message);
         //sendTwilioMessage(recipients[recipient],message);
     }
     res.sendStatus(200);
 });
 
+app.get('/api/inbox',function(req,res){
+    client.messages.list(function(err, data) {
+        console.log(data);
+        //data.messages.forEach(function(message) {
+          //  console.log(message.body);
+        //});
+    });
+});
+
+app.get('/api/messages',function(req,res){
+    var conversations = [];
+    client.messages.list(function(err, data) {
+        data.messages.forEach(function(message) {
+            //check if convo exists, create it if necessary
+            checkConversationExists(conversations,message);
+            //add message to a conversation
+            addMessageToConversation(conversations,message)
+        });
+        console.log('Conversations looks like: ');
+        console.log(conversations);
+        res.send(conversations);
+    });
+});
+//see if we have a place to put this message
+var checkConversationExists=function(conversations,message){
+    recipient=getRecipient(message);
+    var conversationExists = false;
+    conversations.forEach(function(conversation){
+       if (conversation.recipient===recipient){
+           conversationExists=true;
+       }
+    });
+    if (conversationExists===false){
+        conversations.push(createConversation(message));
+    }
+};
+
+//if conversation does not exist create it
+var createConversation=function(message){
+    return({
+       recipient:getRecipient(message),
+        messages:[]
+    });
+
+};
+
+//returns who the recipient is in the conversation
+var getRecipient=function(message){
+    if (message.from===TWILIO_PHONE_NUMBER){
+        return message.to;
+    }
+    else{
+        return message.from;
+    }
+};
+
+//add message to a conversation
+var addMessageToConversation=function(conversations,message){
+    var recipient=getRecipient(message);
+    conversations.forEach(function(conversation){
+        if (conversation.recipient===recipient){
+            conversation.messages.push(message);
+        }
+    });
+
+
+};
 //Required Stompath path
 app.post('/me', bodyParser.json(), stormpath.loginRequired, function (req, res) {
     function writeError(message) {
