@@ -30,7 +30,7 @@ const styles = {
 const InboxTable = React.createClass({
     createInbox(){
         var inbox = [];
-        var messages = this.props.messages.responseJSON;
+        var messages = this.props.messages;
         console.log('Inbox table thinks that the messages are: ');
         console.log(messages);
         messages.forEach(function(recipientObject){

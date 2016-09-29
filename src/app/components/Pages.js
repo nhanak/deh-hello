@@ -57,7 +57,10 @@ darkBaseTheme.palette.primary1Color =lightGreenA400;
 //darkBaseTheme.palette.primary3Color = blueGrey600;
 const muiTheme = getMuiTheme(darkBaseTheme);
 
-
+/*
+ LoginPage: page application redirects to
+ when the user is not authenticated via stormpath
+ */
 var LoginPage = React.createClass({
     render: function() {
         return (
@@ -105,18 +108,34 @@ var FourOhFourPage = React.createClass({
     content that can be changed from the menu
  */
 var HomePage = React.createClass({
+
     getInitialState () {
         return {
             content: <Home/>,
-            messages:jQuery.get('/api/messages')
+            messages: []
         };
     },
+
+    componentDidMount: function() {
+        this.serverRequest = $.get('/api/messages', function (result) {
+            this.setState({
+                messages:result
+            });
+        }.bind(this));
+    },
+
+    componentWillUnmount: function() {
+        this.serverRequest.abort();
+    },
+
     handlePageChange(event,index,value){
+        //home was selected from the menu
         if (value===1){
             this.setState({
                 content: <Home/>
             });
         }
+        //inbox was selected from the menu
         if (value===2){
             this.setState({
                 content: <Inbox messages={this.state.messages}/>
