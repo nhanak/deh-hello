@@ -18,6 +18,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import { StickyContainer, Sticky } from 'react-sticky';
 import RecipientsTable from './RecipientsTable';
 import InboxTable from './InboxTable';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const styles = {
     container: {
@@ -38,7 +39,7 @@ const styles = {
         textAlign: 'center',
         paddingTop: 20,
         float:'left',
-        paddingLeft:650,
+        paddingLeft:639,
     },
     loginContainer:{
         textAlign: 'center',
@@ -226,16 +227,22 @@ var Home = React.createClass({
    render(){
        return(
            <div>
-               <div style={styles.recipientsContainer}>
-                   <h1>Recipients</h1>
-                   <RecipientsTable messageSent={this.state.messageSent} recipients={this.state.recipients} addRecipient={this.addRecipient} removeRecipient={this.removeRecipient}/>
-               </div>
-               <div style={styles.messageContainer}>
-                   <h1 style={styles.headerPadding}>Message</h1>
-                   <textarea rows="10" cols="50" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
-                   <p></p>
-                   <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
-               </div>
+               <ReactCSSTransitionGroup
+                   transitionName="example"
+                   transitionAppear={true}
+                   transitionEnterTimeout={500}
+                   transitionLeaveTimeout={300}>
+                   <div style={styles.recipientsContainer}>
+                       <h1>Recipients</h1>
+                       <RecipientsTable messageSent={this.state.messageSent} recipients={this.state.recipients} addRecipient={this.addRecipient} removeRecipient={this.removeRecipient}/>
+                   </div>
+                   <div style={styles.messageContainer}>
+                       <h1 style={styles.headerPadding}>Message</h1>
+                       <textarea rows="10" cols="50" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
+                       <p></p>
+                       <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
+                   </div>
+               </ReactCSSTransitionGroup>
            </div>
        );
 

@@ -4,6 +4,8 @@
 import React from 'react';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import RaisedButton from 'material-ui/RaisedButton';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
 const styles = {
     tableContainer: {
         width: 800,
@@ -57,27 +59,33 @@ const InboxTable = React.createClass({
    render(){
        return(
            <div>
-               <div style={styles.tableContainer}>
-                   <h1>Inbox</h1>
-                   <Table height="250px" multiSelectable={false} onRowSelection={this._onRowSelection}>
-                       <TableHeader displaySelectAll={false}>
-                           <TableRow>
-                               <TableHeaderColumn>Phone Number</TableHeaderColumn>
-                               <TableHeaderColumn>Message</TableHeaderColumn>
-                               <TableHeaderColumn>Time</TableHeaderColumn>
-                           </TableRow>
-                       </TableHeader>
-                       <TableBody displayRowCheckbox={false}>
-                           {this.state.inbox.map((row, index) => (
-                               <TableRow key={index} selected={this.state.selectedRows.indexOf(index) !== -1}>
-                                   <TableRowColumn>{row.recipient}</TableRowColumn>
-                                   <TableRowColumn>{row.message}</TableRowColumn>
-                                   <TableRowColumn>{row.date}</TableRowColumn>
+               <ReactCSSTransitionGroup
+                   transitionName="example"
+                   transitionAppear={true}
+                   transitionEnterTimeout={500}
+                   transitionLeaveTimeout={300}>
+                   <div style={styles.tableContainer}>
+                       <h1>Inbox</h1>
+                       <Table height="250px" multiSelectable={false} onRowSelection={this._onRowSelection}>
+                           <TableHeader displaySelectAll={false}>
+                               <TableRow>
+                                   <TableHeaderColumn>Phone Number</TableHeaderColumn>
+                                   <TableHeaderColumn>Message</TableHeaderColumn>
+                                   <TableHeaderColumn>Time</TableHeaderColumn>
                                </TableRow>
-                           ))}
-                       </TableBody>
-                   </Table>
-               </div>
+                           </TableHeader>
+                           <TableBody displayRowCheckbox={false}>
+                               {this.state.inbox.map((row, index) => (
+                                   <TableRow key={index} selected={this.state.selectedRows.indexOf(index) !== -1}>
+                                       <TableRowColumn>{row.recipient}</TableRowColumn>
+                                       <TableRowColumn>{row.message}</TableRowColumn>
+                                       <TableRowColumn>{row.date}</TableRowColumn>
+                                   </TableRow>
+                               ))}
+                           </TableBody>
+                       </Table>
+                   </div>
+               </ReactCSSTransitionGroup>
            </div>
        )
    }
