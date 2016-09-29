@@ -18,6 +18,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import { StickyContainer, Sticky } from 'react-sticky';
 import RecipientsTable from './RecipientsTable';
 import InboxTable from './InboxTable';
+import MyAwesomeConversation from './Chat'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const styles = {
@@ -254,17 +255,21 @@ var Home = React.createClass({
     accounts sms messages
  */
 var Inbox = React.createClass({
-    viewConversation(phoneNumber){
+    viewConversation(){
         this.setState({
-            content:<Conversation/>,
-            conversationPhoneNumber:phoneNumber
+            content:<MyAwesomeConversation/>
+                //<Chat viewInbox={this.viewInbox} messages=conversationMessages/>
+        });
+    },
+    viewInbox(){
+        return({
+            content:<InboxTable viewConversation={this.viewConversation} messages={this.props.messages}/>
         });
     },
 
     getInitialState(){
         return({
-            content:<InboxTable viewConversation={this.viewConversation} messages={this.props.messages}/>,
-            conversationPhoneNumber:''
+            content:<InboxTable viewConversation={this.viewConversation} messages={this.props.messages}/>
         });
     },
 

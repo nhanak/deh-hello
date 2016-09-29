@@ -53,7 +53,7 @@ const InboxTable = React.createClass({
         };
     },
     _onRowSelection(selectedRow){
-        this.props.viewConversation(selectedRow.phoneNumber);
+        this.props.viewConversation();
     },
 
    render(){
@@ -66,7 +66,7 @@ const InboxTable = React.createClass({
                    transitionLeaveTimeout={300}>
                    <div style={styles.tableContainer}>
                        <h1>Inbox</h1>
-                       <Table height="250px" multiSelectable={false} onRowSelection={this._onRowSelection}>
+                       <Table height="250px" multiSelectable={false} onCellClick={this.props.viewConversation}>
                            <TableHeader displaySelectAll={false}>
                                <TableRow>
                                    <TableHeaderColumn>Phone Number</TableHeaderColumn>
@@ -74,9 +74,9 @@ const InboxTable = React.createClass({
                                    <TableHeaderColumn>Time</TableHeaderColumn>
                                </TableRow>
                            </TableHeader>
-                           <TableBody displayRowCheckbox={false}>
+                           <TableBody displayRowCheckbox={false} showRowHover={true}>
                                {this.state.inbox.map((row, index) => (
-                                   <TableRow key={index} selected={this.state.selectedRows.indexOf(index) !== -1}>
+                                   <TableRow key={index}>
                                        <TableRowColumn>{row.recipient}</TableRowColumn>
                                        <TableRowColumn>{row.message}</TableRowColumn>
                                        <TableRowColumn>{row.date}</TableRowColumn>
