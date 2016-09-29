@@ -11,7 +11,6 @@ import darkBaseTheme from '../../../node_modules/material-ui/styles/baseThemes/d
 import {lightGreenA100,lightGreenA400,lightGreenA200,cyan700} from '../../../node_modules/material-ui/styles/colors';
 import getMuiTheme from '../../../node_modules/material-ui/styles/getMuiTheme';
 import MuiThemeProvider from '../../../node_modules/material-ui/styles/MuiThemeProvider';
-import VisibleLoginFormOld from '../containers/VisibleLoginFormOld';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import MenuItem from 'material-ui/MenuItem';
@@ -58,17 +57,6 @@ darkBaseTheme.palette.primary1Color =lightGreenA400;
 //darkBaseTheme.palette.primary3Color = blueGrey600;
 const muiTheme = getMuiTheme(darkBaseTheme);
 
-var LoginPageOld = React.createClass({
-    render: function() {
-        return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-                <div style={styles.container}>
-                    <VisibleLoginFormOld/>
-                </div>
-            </MuiThemeProvider>
-        );
-    }
-});
 
 var LoginPage = React.createClass({
     render: function() {
@@ -96,7 +84,10 @@ var LoginPage = React.createClass({
     }
 });
 
-
+/*
+ FourOhFourPage: Page application redirects to
+ when it cannot find the resource
+ */
 var FourOhFourPage = React.createClass({
     render: function() {
         return (
