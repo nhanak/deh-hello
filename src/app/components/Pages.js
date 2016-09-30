@@ -89,6 +89,13 @@ var LoginPage = React.createClass({
     }
 });
 
+var ChatTestPage = React.createClass({
+    render:function(){
+        return(
+            <MyAwesomeConversation/>
+        )
+    }
+})
 /*
  FourOhFourPage: Page application redirects to
  when it cannot find the resource
@@ -282,4 +289,4 @@ var Inbox = React.createClass({
     }
 });
 
-export {LoginPage, FourOhFourPage, HomePage};
+export {LoginPage, FourOhFourPage, HomePage, ChatTestPage};
