@@ -58,15 +58,6 @@ app.post('/api/messages',function(req,res){
     res.sendStatus(200);
 });
 
-app.get('/api/inbox',function(req,res){
-    client.messages.list(function(err, data) {
-        console.log(data);
-        //data.messages.forEach(function(message) {
-          //  console.log(message.body);
-        //});
-    });
-});
-
 app.get('/api/messages',function(req,res){
     var conversations = [];
     client.messages.list(function(err, data) {
@@ -119,7 +110,16 @@ var addMessageToConversation=function(conversations,message){
     var recipient=getRecipient(message);
     conversations.forEach(function(conversation){
         if (conversation.recipient===recipient){
-            conversation.messages.push(message);
+            console.log('The message is: ');
+            console.log(message);
+            var themOrUs='';
+            if (message.from===TWILIO_PHONE_NUMBER){
+                themOrUs='us'
+            }
+            else{
+                themOrUs='them'
+            }
+            conversation.messages.push({body: message.body, from: themOrUs, date:message.date_sent, them:recipient});
         }
     });
 

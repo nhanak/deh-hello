@@ -33,17 +33,13 @@ const InboxTable = React.createClass({
     createInbox(){
         var inbox = [];
         var messages = this.props.messages;
-        console.log('Inbox table thinks that the messages are: ');
-        console.log(messages);
         messages.forEach(function(recipientObject){
           inbox.push({
               recipient: recipientObject.recipient,
               message: recipientObject.messages[0].body,
-              date: recipientObject.messages[0].dateSent
+              date: recipientObject.messages[0].date
           })
       });
-        console.log('The inbox looks like: ');
-        console.log(inbox);
         return inbox;
     },
     getInitialState() {
@@ -52,8 +48,9 @@ const InboxTable = React.createClass({
             inbox: this.createInbox()
         };
     },
-    _onRowSelection(selectedRow){
-        this.props.viewConversation();
+    getRecipient(rowNumber, columnID){
+        var row = this.state.inbox[rowNumber];
+        this.props.viewConversation(row.recipient);
     },
 
    render(){
@@ -63,10 +60,11 @@ const InboxTable = React.createClass({
                    transitionName="example"
                    transitionAppear={true}
                    transitionEnterTimeout={500}
-                   transitionLeaveTimeout={300}>
+                   transitionLeaveTimeout={300}
+                   transitionAppearTimeout={500}>
                    <div style={styles.tableContainer}>
                        <h1>Inbox</h1>
-                       <Table height="250px" multiSelectable={false} onCellClick={this.props.viewConversation}>
+                       <Table height="250px" multiSelectable={false} onCellClick={this.getRecipient}>
                            <TableHeader displaySelectAll={false}>
                                <TableRow>
                                    <TableHeaderColumn>Phone Number</TableHeaderColumn>

@@ -17,93 +17,8 @@ const styles = {
     paddedTop:{
         paddingTop: 20
     }};
-var messages = [{
-    message:'How do I use this messaging app?How do I use this messaging app?How do I use this messaging app?How do I use this messaging app?How do I use this messaging app?How do I use this messaging app?',
-    from: 'us',
-    id:'1'
-    },
-    {
-    message:'no idea',
-    from: 'them',
-        id:'2'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'3'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'4'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'5'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'6'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'7'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'8'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'9'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'10'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'11'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'12'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'13'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'14'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'15'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'16'
-    },
-    {
-        message:'no idea',
-        from: 'them',
-        id:'17'
-    }];
 
-var Conversation = React.createClass({
+const Conversation = React.createClass({
     getInitialState(){
       return{
           message: ''
@@ -121,12 +36,13 @@ var Conversation = React.createClass({
                     transitionName="example"
                     transitionAppear={true}
                     transitionEnterTimeout={500}
-                    transitionLeaveTimeout={300}>
+                    transitionLeaveTimeout={300}
+                    transitionAppearTimeout={500}>
             <div style={styles.centered}>
                 <h1 style={styles.paddedTop}>Conversation with </h1>
                 <div className="chat">
                     {this.props.messages.map((message) => (
-                        <Message key={message.id} message={message.message} from={message.from}/>
+                        <Message key={message.date} message={message.body} from={message.from}/>
                     ))}
                 </div>
                 <textarea rows="2" cols="36" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
@@ -138,14 +54,6 @@ var Conversation = React.createClass({
         )
     }
 });
-const MyAwesomeConversation = React.createClass({
-    render(){
-        return (
-            <Conversation messages={messages} />
-         )
-    }
-});
-export default MyAwesomeConversation;
 
 var Message = React.createClass({
     getMeOrYou(){
@@ -170,3 +78,5 @@ var Message = React.createClass({
        )
    }
 });
+
+export default Conversation

@@ -18,7 +18,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import { StickyContainer, Sticky } from 'react-sticky';
 import RecipientsTable from './RecipientsTable';
 import InboxTable from './InboxTable';
-import MyAwesomeConversation from './Chat'
+import Conversation from './Chat'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const styles = {
@@ -89,13 +89,6 @@ var LoginPage = React.createClass({
     }
 });
 
-var ChatTestPage = React.createClass({
-    render:function(){
-        return(
-            <MyAwesomeConversation/>
-        )
-    }
-})
 /*
  FourOhFourPage: Page application redirects to
  when it cannot find the resource
@@ -239,7 +232,8 @@ var Home = React.createClass({
                    transitionName="example"
                    transitionAppear={true}
                    transitionEnterTimeout={500}
-                   transitionLeaveTimeout={300}>
+                   transitionLeaveTimeout={300}
+                   transitionAppearTimeout={500}>
                    <div style={styles.recipientsContainer}>
                        <h1>Recipients</h1>
                        <RecipientsTable messageSent={this.state.messageSent} recipients={this.state.recipients} addRecipient={this.addRecipient} removeRecipient={this.removeRecipient}/>
@@ -262,9 +256,16 @@ var Home = React.createClass({
     accounts sms messages
  */
 var Inbox = React.createClass({
-    viewConversation(){
+    viewConversation(recipient){
+        var findRecipientMessages = function(convoObject){
+            if (convoObject.recipient===recipient){
+                return convoObject.messages;
+            }
+        }
+        var recipientMessagesRaw = this.props.messages.filter(findRecipientMessages);
+        var recipientMessages = recipientMessagesRaw[0].messages;
         this.setState({
-            content:<MyAwesomeConversation/>
+            content:<Conversation messages={recipientMessages}/>
                 //<Chat viewInbox={this.viewInbox} messages=conversationMessages/>
         });
     },
@@ -289,4 +290,4 @@ var Inbox = React.createClass({
     }
 });
 
-export {LoginPage, FourOhFourPage, HomePage, ChatTestPage};
+export {LoginPage, FourOhFourPage, HomePage};
