@@ -130,6 +130,20 @@ var HomePage = React.createClass({
         this.serverRequest.abort();
     },
 
+    //what happens when a conversation in the inbox is clicked on
+    viewConversation(recipient){
+        var findRecipientMessages = function(convoObject){
+            if (convoObject.recipient===recipient){
+                return convoObject.messages;
+            }
+        }
+        var recipientMessagesRaw = this.state.messages.filter(findRecipientMessages);
+        var recipientMessages = recipientMessagesRaw[0].messages;
+        this.setState({
+            content:<Chat recipientMessages={recipientMessages} recipient={recipient}/>
+        });
+    },
+
     handlePageChange(event,index,value){
         //home was selected from the menu
         if (value===1){
@@ -140,10 +154,11 @@ var HomePage = React.createClass({
         //inbox was selected from the menu
         if (value===2){
             this.setState({
-                content: <Inbox messages={this.state.messages}/>
+                content: <Inbox messages={this.state.messages} viewConversation={this.viewConversation}/>
             });
         }
     },
+
     render: function() {
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
@@ -256,38 +271,23 @@ var Home = React.createClass({
     accounts sms messages
  */
 var Inbox = React.createClass({
-    viewConversation(recipient){
-        var findRecipientMessages = function(convoObject){
-            if (convoObject.recipient===recipient){
-                return convoObject.messages;
-            }
-        }
-        var recipientMessagesRaw = this.props.messages.filter(findRecipientMessages);
-        var recipientMessages = recipientMessagesRaw[0].messages;
-        this.setState({
-            content:<Conversation messages={recipientMessages} recipient={recipient}/>
-                //<Chat viewInbox={this.viewInbox} messages=conversationMessages/>
-        });
-    },
-    viewInbox(){
-        return({
-            content:<InboxTable viewConversation={this.viewConversation} messages={this.props.messages}/>
-        });
-    },
-
-    getInitialState(){
-        return({
-            content:<InboxTable viewConversation={this.viewConversation} messages={this.props.messages}/>
-        });
-    },
-
-    render: function() {
+    render(){
         return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-                {this.state.content}
-            </MuiThemeProvider>
+            <InboxTable viewConversation={this.props.viewConversation} messages={this.props.messages}/>
         );
     }
+});
+
+/*
+ Chat: Displays a conversation. Gives user
+ ability to send more messages to a recipient
+ */
+var Chat = React.createClass({
+   render(){
+       return(
+           <Conversation messages={this.props.recipientMessages} recipient={this.props.recipient}/>
+       )
+   }
 });
 
 export {LoginPage, FourOhFourPage, HomePage};
