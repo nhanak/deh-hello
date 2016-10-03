@@ -61,7 +61,7 @@ const Conversation = React.createClass({
                         <Message key={message.date} message={message.body} from={message.from}/>
                     ))}
                 </div>
-                <textarea rows="2" cols="36" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
+                <textarea rows="1" cols="42" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
                 <p></p>
                 <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
             </div>
