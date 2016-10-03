@@ -58,20 +58,38 @@ app.post('/api/messages',function(req,res){
     res.sendStatus(200);
 });
 
-app.get('/api/messages',function(req,res){
-    var conversations = [];
-    client.messages.list(function(err, data) {
-        data.messages.forEach(function(message) {
-            //check if convo exists, create it if necessary
-            checkConversationExists(conversations,message);
-            //add message to a conversation
-            addMessageToConversation(conversations,message)
-        });
-        console.log('Conversations looks like: ');
-        console.log(conversations);
-        res.send(conversations);
+var getMessages=function(numberOfMessages,res){
+    var messagesURI='/Accounts/'+String(TWILIO_ACCOUNT_SID)+"/Messages.json?PageSize="+String(numberOfMessages)+"&Page=0";
+    var requestPromise=client.request({
+        url: messagesURI,
+        method: 'GET'
     });
+    requestPromise.then(function(data){
+        var conversations = [];
+        //work with response data
+        data.messages.forEach(function (message) {
+            nextPageURI = message.next_page_uri;
+            //check if convo exists, create it if necessary
+            checkConversationExists(conversations, message);
+            //add message to a conversation
+            addMessageToConversation(conversations, message)
+        });
+        //console.log('Conversations looks like: ');
+        //console.log(conversations);
+        conversations.forEach(function(conversation){
+            conversation.messages.reverse();
+        });
+        res.send(conversations);
+    },function(err){
+        console.log('There was an error'+JSON.stringify(err));
+    });
+}
+
+app.get('/api/messages',function(req,res){
+    var numberOfMessages=300;
+    getMessages(numberOfMessages,res);
 });
+
 //see if we have a place to put this message
 var checkConversationExists=function(conversations,message){
     recipient=getRecipient(message);
@@ -110,8 +128,8 @@ var addMessageToConversation=function(conversations,message){
     var recipient=getRecipient(message);
     conversations.forEach(function(conversation){
         if (conversation.recipient===recipient){
-            console.log('The message is: ');
-            console.log(message);
+            //console.log('The message is: ');
+            //console.log(message);
             var themOrUs='';
             if (message.from===TWILIO_PHONE_NUMBER){
                 themOrUs='us'

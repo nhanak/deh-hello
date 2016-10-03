@@ -39,7 +39,7 @@ const Conversation = React.createClass({
                     transitionLeaveTimeout={300}
                     transitionAppearTimeout={500}>
             <div style={styles.centered}>
-                <h1 style={styles.paddedTop}>Conversation with </h1>
+                <h1 style={styles.paddedTop}>Conversation with {this.props.recipient} </h1>
                 <div className="chat">
                     {this.props.messages.map((message) => (
                         <Message key={message.date} message={message.body} from={message.from}/>

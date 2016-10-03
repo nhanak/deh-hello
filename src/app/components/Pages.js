@@ -265,7 +265,7 @@ var Inbox = React.createClass({
         var recipientMessagesRaw = this.props.messages.filter(findRecipientMessages);
         var recipientMessages = recipientMessagesRaw[0].messages;
         this.setState({
-            content:<Conversation messages={recipientMessages}/>
+            content:<Conversation messages={recipientMessages} recipient={recipient}/>
                 //<Chat viewInbox={this.viewInbox} messages=conversationMessages/>
         });
     },
