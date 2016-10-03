@@ -24,11 +24,27 @@ const Conversation = React.createClass({
           message: ''
       }
     },
+
     handleMessageChange(evt){
         this.setState({
             message: evt.target.value
         });
     },
+
+    sendMessage(){
+        if (this.state.message.length!==0){
+            var twilioMessage={
+                message: this.state.message,
+                recipients:[this.props.recipient]
+            };
+            jQuery.post('/api/messages',twilioMessage);
+            alert('Message succesfully sent to: '+this.props.recipient+"!");
+            this.setState({
+                message: ''
+            })
+        }
+    },
+
     render(){
         return(
             <MuiThemeProvider muiTheme={muiTheme}>
