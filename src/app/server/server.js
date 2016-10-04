@@ -6,6 +6,7 @@ var express =require('express');
 var bodyParser = require('body-parser')
 var stormpath = require('express-stormpath');
 var twilio = require('twilio');
+var http = require('http').Server(app);
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(stormpath.init(app, {
         }
     }
 }));
+
 //TWILIO
 //require the Twilio module and create a REST client
 var TWILIO_ACCOUNT_SID=process.env.TWILIO_ACCOUNT_SID;
@@ -80,6 +82,32 @@ var getMessages=function(numberOfMessages,res){
             conversation.messages.reverse();
         });
         res.send(conversations);
+    },function(err){
+        console.log('There was an error'+JSON.stringify(err));
+    });
+}
+
+var getNewestMessage=function(callback){
+    var messagesURI='/Accounts/'+String(TWILIO_ACCOUNT_SID)+"/Messages.json?PageSize=1&Page=0";
+    var requestPromise=client.request({
+        url: messagesURI,
+        method: 'GET'
+    });
+    requestPromise.then(function(data){
+        var conversations = [];
+        //work with response data
+        data.messages.forEach(function (message) {
+            nextPageURI = message.next_page_uri;
+            //check if convo exists, create it if necessary
+            checkConversationExists(conversations, message);
+            //add message to a conversation
+            addMessageToConversation(conversations, message)
+        });
+        conversations.forEach(function(conversation){
+            conversation.messages.reverse();
+        });
+        console.log('Calling callback...')
+        callback(conversations);
     },function(err){
         console.log('There was an error'+JSON.stringify(err));
     });
@@ -185,6 +213,7 @@ app.post('/me', bodyParser.json(), stormpath.loginRequired, function (req, res) 
 });
 
 
+
 app.get('*', function(req, res) {
     res.sendFile(path.resolve(__dirname, '../../../', 'build/index.html'));
 });
@@ -193,7 +222,21 @@ app.get('*', function(req, res) {
 var startServer = function(){
     var port = 3000;
     console.log('The server is listening on: '+port)
-    app.listen(port);
+    var server = app.listen(port);
+    var io = require('socket.io').listen(server);
+    //use socket.io
+    io.on('connection', function(socket){
+        console.log('a user connected');
+    });
+    //twilio will notify us that we are recieving a message
+    app.post('/api/incoming', function(req,res){
+        getNewestMessage(function(conversation){
+            io.emit('new message', conversation);
+        });
+        var twiml = new twilio.TwimlResponse();
+        res.writeHead(200, {'Content-Type': 'text/xml'});
+        res.end(twiml.toString());
+    });
 };
 
 //wait for stormpath, then start server

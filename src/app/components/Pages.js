@@ -118,7 +118,44 @@ var HomePage = React.createClass({
         };
     },
 
+    addMessageToConversation(message){
+        var conversations=this.state.messages;
+        var conversationsPure = conversations.filter(function(convoObject){
+           return convoObject.recipient!=message.recipient
+        });
+        var oldConversation = conversations.filter(function(convoObject){
+            return convoObject.recipient===message.recipient
+        });
+        var newConversation = {recipient:oldConversation[0].recipient,messages:message.messages};
+        newConversation.messages=oldConversation[0].messages.concat(newConversation.messages);
+        var array = [newConversation];
+        array = array.concat(conversationsPure);
+        return array;
+    },
+
+    handleNewMessage:function(conversation){
+        console.log('Handling new message...');
+        var newConversation=conversation[0];
+        var conversationFound=false;
+        this.state.messages.forEach(function(convoObject) {
+            if (convoObject.recipient === newConversation.recipient) {
+                conversationFound = true;
+            }
+        });
+        if (conversationFound===false) {
+            this.setState({
+                messages: this.state.messages.concat(newConversation)
+            });
+        }
+        else{
+            this.setState({
+                messages:this.addMessageToConversation(newConversation)
+            });
+        }
+    },
+
     componentDidMount: function() {
+        socket.on('new message', this.handleNewMessage);
         this.serverRequest = $.get('/api/messages', function (result) {
             this.setState({
                 messages:result
