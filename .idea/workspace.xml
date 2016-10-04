@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7e1777c4-67eb-4e12-8d3b-3672cca33cec" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-    </list>
+    <list default="true" id="7e1777c4-67eb-4e12-8d3b-3672cca33cec" name="Default" comment="" />
     <ignored path="deh-hello.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
