@@ -11,7 +11,7 @@ npm install
 
 Now you can run your local dev server:
 ```sh
-npm start
+npm run devStart
 ```
 Server is located at http://localhost:3000
 
@@ -34,6 +34,5 @@ To run the production version of this application:
 ```sh
 cd <project folder>
 webpack -p --config webpack-production.config.js
-cd <project folder>/src/app/server
-node server
+npm start
 ```
