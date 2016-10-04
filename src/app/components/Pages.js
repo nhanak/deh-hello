@@ -143,8 +143,9 @@ var HomePage = React.createClass({
             }
         });
         if (conversationFound===false) {
+            var newMessages = this.state.messages.push(newConversation);
             this.setState({
-                messages: this.state.messages.concat(newConversation)
+                messages: newMessages
             });
         }
         else{

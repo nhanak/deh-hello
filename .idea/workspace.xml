@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7e1777c4-67eb-4e12-8d3b-3672cca33cec" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/components/Pages.js" afterPath="$PROJECT_DIR$/src/app/components/Pages.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/server/server.js" afterPath="$PROJECT_DIR$/src/app/server/server.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/www/index.html" afterPath="$PROJECT_DIR$/src/www/index.html" />
     </list>
     <ignored path="deh-hello.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -43,9 +40,11 @@
       <file leaf-file-name="Pages.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/app/components/Pages.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.1835687">
-              <caret line="141" column="41" selection-start-line="141" selection-start-column="41" selection-end-line="141" selection-end-column="41" />
-              <folding />
+            <state vertical-scroll-proportion="0.6816431">
+              <caret line="145" column="72" selection-start-line="145" selection-start-column="72" selection-end-line="145" selection-end-column="72" />
+              <folding>
+                <element signature="e#7855#10284#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -188,8 +187,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -290,6 +287,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -475,7 +474,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="28" column="19" selection-start-line="28" selection-start-column="19" selection-end-line="28" selection-end-column="19" />
-          <folding />
+          <folding>
+            <element signature="e#7855#10284#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -494,7 +495,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="44" selection-start-line="15" selection-start-column="44" selection-end-line="15" selection-end-column="44" />
-          <folding />
+          <folding>
+            <element signature="e#7855#10284#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -541,7 +544,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="39" selection-start-line="7" selection-start-column="39" selection-end-line="7" selection-end-column="39" />
-          <folding />
+          <folding>
+            <element signature="e#7855#10284#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -582,7 +587,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="35" column="21" selection-start-line="35" selection-start-column="21" selection-end-line="35" selection-end-column="21" />
-          <folding />
+          <folding>
+            <element signature="e#7855#10284#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -795,9 +802,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/app/components/Pages.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.1835687">
-          <caret line="141" column="41" selection-start-line="141" selection-start-column="41" selection-end-line="141" selection-end-column="41" />
-          <folding />
+        <state vertical-scroll-proportion="0.6816431">
+          <caret line="145" column="72" selection-start-line="145" selection-start-column="72" selection-end-line="145" selection-end-column="72" />
+          <folding>
+            <element signature="e#7855#10284#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
