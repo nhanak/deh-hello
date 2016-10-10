@@ -48,9 +48,9 @@ const RecipientsTable= React.createClass({
     },
 
     _onRowSelection:function(selectedRowz){
-      this.setState({
-          selectedRows: selectedRowz
-      });
+        this.setState({
+            selectedRows: selectedRowz
+        });
     },
 
     removeSelected:function(){
@@ -64,32 +64,31 @@ const RecipientsTable= React.createClass({
     },
     render: function () {
         return(
-        <div>
-            <div style={styles.tableContainer}>
-                <Table height="250px" multiSelectable={true} onRowSelection={this._onRowSelection}>
-                    <TableHeader displaySelectAll={false}>
-                        <TableRow>
-                            <TableHeaderColumn>Phone Number</TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {this.props.recipients.map( (row, index) => (
-                            <TableRow key={index} selected={this.state.selectedRows.indexOf(index) !== -1}>
-                                <TableRowColumn>{row}</TableRowColumn>
+            <div>
+                <div style={styles.tableContainer}>
+                    <Table height="250px" multiSelectable={true} onRowSelection={this._onRowSelection}>
+                        <TableHeader displaySelectAll={false}>
+                            <TableRow>
+                                <TableHeaderColumn>Phone Number</TableHeaderColumn>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHeader>
+                        <TableBody>
+                            {this.props.recipients.map( (row, index) => (
+                                <TableRow key={index} selected={this.state.selectedRows.indexOf(index) !== -1}>
+                                    <TableRowColumn>{row}</TableRowColumn>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </div>
                 <input value={this.state.recipientNumber} type="text" name="phone_number" placeholder="Recipients phone number" style={styles.recipientsNumberContainer} onChange={this.handleRecipientNumberChange}/>
-            <div style={styles.buttonContainer}>
-                <RaisedButton label="Add" primary={true} type="submit" value="Send" style={styles.buttonSpacer}  onTouchTap={() =>{this.props.addRecipient(this.state.recipientNumber,this.resetRecipientNumber)}}/>
-                <RaisedButton label="Remove Selected" secondary={true} onTouchTap={this.removeSelected}/>
+                <div style={styles.buttonContainer}>
+                    <RaisedButton label="Add" primary={true} type="submit" value="Send" style={styles.buttonSpacer}  onTouchTap={() =>{this.props.addRecipient(this.state.recipientNumber,this.resetRecipientNumber)}}/>
+                    <RaisedButton label="Remove Selected" secondary={true} onTouchTap={this.removeSelected}/>
+                </div>
             </div>
-        </div>
         )
     }
-    });
-
+});
 
 export default RecipientsTable;

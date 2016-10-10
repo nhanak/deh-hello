@@ -20,7 +20,7 @@ app.use(stormpath.init(app, {
     web: {
         spa: {
             enabled: true,
-            view: path.resolve(__dirname, '../../../', 'build/index.html')
+            view: path.resolve(__dirname, '/build/index.html')
         },
         register: {
             enabled: false
@@ -47,15 +47,15 @@ var sendTwilioMessage=function(recipient,message){
 
 
 //END TWILIO
-app.use(express.static('../../../build'));
+app.use(express.static('build'));
 
-app.post('/api/messages',function(req,res){
+app.post('/api/messages',stormpath.loginRequired,function(req,res){
     var recipients = req.body.recipients;
     var message = req.body.message;
     for (var recipient in recipients){
-        console.log('User wants to message: '+recipients[recipient]);
-        console.log('with message: '+message);
-        //sendTwilioMessage(recipients[recipient],message);
+        //console.log('User wants to message: '+recipients[recipient]);
+        //console.log('with message: '+message);
+        sendTwilioMessage(recipients[recipient],message);
     }
     res.sendStatus(200);
 });
@@ -113,8 +113,8 @@ var getNewestMessage=function(callback){
     });
 }
 
-app.get('/api/messages',function(req,res){
-    var numberOfMessages=300;
+app.get('/api/messages',stormpath.loginRequired,function(req,res){
+    var numberOfMessages=500;
     getMessages(numberOfMessages,res);
 });
 
@@ -123,9 +123,9 @@ var checkConversationExists=function(conversations,message){
     recipient=getRecipient(message);
     var conversationExists = false;
     conversations.forEach(function(conversation){
-       if (conversation.recipient===recipient){
-           conversationExists=true;
-       }
+        if (conversation.recipient===recipient){
+            conversationExists=true;
+        }
     });
     if (conversationExists===false){
         conversations.push(createConversation(message));
@@ -135,7 +135,7 @@ var checkConversationExists=function(conversations,message){
 //if conversation does not exist create it
 var createConversation=function(message){
     return({
-       recipient:getRecipient(message),
+        recipient:getRecipient(message),
         messages:[]
     });
 
@@ -215,24 +215,50 @@ app.post('/me', bodyParser.json(), stormpath.loginRequired, function (req, res) 
 
 
 app.get('*', function(req, res) {
-    res.sendFile(path.resolve(__dirname, '../../../', 'build/index.html'));
+    res.sendFile(path.join(__dirname, './build', 'index.html'));
 });
 
+var getIncomingRecipient=function(bodyObject){
+    if (bodyObject.From===TWILIO_PHONE_NUMBER){
+        return bodyObject.To;
+    }
+    else{
+        return bodyObject.From;
+    }
+};
+
+var getIncomingThemOrUs=function(bodyObject){
+    var themOrUs='';
+    if (bodyObject.From===TWILIO_PHONE_NUMBER){
+        themOrUs='us';
+    }
+    else{
+        themOrUs='them';
+    }
+    return themOrUs;
+};
 
 var startServer = function(){
     var port = 3000;
-    console.log('The server is listening on: '+port)
-    var server = app.listen(port);
+    console.log('The server is listening...');
+    var server = app.listen(process.env.PORT || port);
     var io = require('socket.io').listen(server);
     //use socket.io
     io.on('connection', function(socket){
         console.log('a user connected');
     });
     //twilio will notify us that we are recieving a message
+    //conversation.messages.push({body: message.body, from: themOrUs, date:message.date_sent, them:recipient});
     app.post('/api/incoming', function(req,res){
-        getNewestMessage(function(conversation){
-            io.emit('new message', conversation);
-        });
+        //console.log('The request body appears to be...');
+        //console.log(req.body);
+        var thisRecipient = getIncomingRecipient(req.body);
+        var themOrUs = getIncomingThemOrUs(req.body);
+        var nowDate = new Date();
+        var conversation = [{recipient:thisRecipient,messages:[{body:req.body.Body,from:themOrUs,date:nowDate,them:thisRecipient}]}];
+        //console.log('Got newest message!');
+        //console.log(JSON.stringify(conversation));
+        io.emit('new message', conversation);
         var twiml = new twilio.TwimlResponse();
         res.writeHead(200, {'Content-Type': 'text/xml'});
         res.end(twiml.toString());

@@ -30,62 +30,44 @@ const styles = {
 };
 
 const InboxTable = React.createClass({
-    createInbox(){
-        var inbox = [];
-        var messages = this.props.messages;
-        messages.forEach(function(recipientObject){
-          inbox.push({
-              recipient: recipientObject.recipient,
-              message: recipientObject.messages[0].body,
-              date: recipientObject.messages[0].date
-          })
-      });
-        return inbox;
-    },
-    getInitialState() {
-        return {
-            selectedRows: [],
-            inbox: this.createInbox()
-        };
-    },
     getRecipient(rowNumber, columnID){
-        var row = this.state.inbox[rowNumber];
+        var row = this.props.messages[rowNumber];
         this.props.viewConversation(row.recipient);
     },
 
-   render(){
-       return(
-           <div>
-               <ReactCSSTransitionGroup
-                   transitionName="example"
-                   transitionAppear={true}
-                   transitionEnterTimeout={500}
-                   transitionLeaveTimeout={300}
-                   transitionAppearTimeout={500}>
-                   <div style={styles.tableContainer}>
-                       <h1>Inbox</h1>
-                       <Table height="250px" multiSelectable={false} onCellClick={this.getRecipient}>
-                           <TableHeader displaySelectAll={false}>
-                               <TableRow>
-                                   <TableHeaderColumn>Phone Number</TableHeaderColumn>
-                                   <TableHeaderColumn>Message</TableHeaderColumn>
-                                   <TableHeaderColumn>Time</TableHeaderColumn>
-                               </TableRow>
-                           </TableHeader>
-                           <TableBody displayRowCheckbox={false} showRowHover={true}>
-                               {this.state.inbox.map((row, index) => (
-                                   <TableRow key={index}>
-                                       <TableRowColumn>{row.recipient}</TableRowColumn>
-                                       <TableRowColumn>{row.message}</TableRowColumn>
-                                       <TableRowColumn>{row.date}</TableRowColumn>
-                                   </TableRow>
-                               ))}
-                           </TableBody>
-                       </Table>
-                   </div>
-               </ReactCSSTransitionGroup>
-           </div>
-       )
-   }
+    render(){
+        return(
+            <div>
+                <ReactCSSTransitionGroup
+                    transitionName="example"
+                    transitionAppear={true}
+                    transitionEnterTimeout={500}
+                    transitionLeaveTimeout={300}
+                    transitionAppearTimeout={500}>
+                    <div style={styles.tableContainer}>
+                        <h1>Inbox</h1>
+                        <Table height="250px" multiSelectable={false} onCellClick={this.getRecipient}>
+                            <TableHeader displaySelectAll={false}>
+                                <TableRow>
+                                    <TableHeaderColumn>Phone Number</TableHeaderColumn>
+                                    <TableHeaderColumn>Message</TableHeaderColumn>
+                                    <TableHeaderColumn>Time</TableHeaderColumn>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody displayRowCheckbox={false} showRowHover={true}>
+                                {this.props.messages.map((row, index) => (
+                                    <TableRow key={index}>
+                                        <TableRowColumn>{row.recipient}</TableRowColumn>
+                                        <TableRowColumn>{row.messages[row.messages.length-1].body}</TableRowColumn>
+                                        <TableRowColumn>{row.messages[row.messages.length-1].date}</TableRowColumn>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </ReactCSSTransitionGroup>
+            </div>
+        )
+    }
 });
 export default InboxTable;

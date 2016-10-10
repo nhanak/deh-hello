@@ -12,7 +12,7 @@ const muiTheme = getMuiTheme(darkBaseTheme);
 //right is us, left is other person
 const styles = {
     centered: {
-    textAlign: 'center',
+        textAlign: 'center',
     },
     paddedTop:{
         paddingTop: 20
@@ -20,9 +20,9 @@ const styles = {
 
 const Conversation = React.createClass({
     getInitialState(){
-      return{
-          message: ''
-      }
+        return{
+            message: ''
+        }
     },
 
     handleMessageChange(evt){
@@ -44,8 +44,15 @@ const Conversation = React.createClass({
             })
         }
     },
+    findRecipientMessages(convoObject){
+        if (convoObject.recipient===this.props.recipient){
+            return convoObject.messages;
+        }
+    },
 
     render(){
+        var recipientMessagesRaw = this.props.messages.filter(this.findRecipientMessages);
+        var recipientMessages = recipientMessagesRaw[0].messages;
         return(
             <MuiThemeProvider muiTheme={muiTheme}>
                 <ReactCSSTransitionGroup
@@ -54,19 +61,19 @@ const Conversation = React.createClass({
                     transitionEnterTimeout={500}
                     transitionLeaveTimeout={300}
                     transitionAppearTimeout={500}>
-            <div style={styles.centered}>
-                <h1 style={styles.paddedTop}>Conversation with {this.props.recipient} </h1>
-                <div className="chat">
-                    {this.props.messages.map((message) => (
-                        <Message key={message.date} message={message.body} from={message.from}/>
-                    ))}
-                </div>
-                <textarea rows="1" cols="42" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
-                <p></p>
-                <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
-            </div>
+                    <div style={styles.centered}>
+                        <h1 style={styles.paddedTop}>Conversation with {this.props.recipient} </h1>
+                        <div className="chat">
+                            {recipientMessages.map((message) => (
+                                <Message key={message.date} message={message.body} from={message.from}/>
+                            ))}
+                        </div>
+                        <textarea rows="1" cols="42" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
+                        <p></p>
+                        <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
+                    </div>
                 </ReactCSSTransitionGroup>
-                </MuiThemeProvider>
+            </MuiThemeProvider>
         )
     }
 });
@@ -75,12 +82,12 @@ var Message = React.createClass({
     getMeOrYou(){
         var bubbleYou="bubble you";
         var bubbleMe="bubble me";
-      if (this.props.from==='them'){
-          return bubbleMe
-      }
-    else{
-          return bubbleYou
-      }
+        if (this.props.from==='them'){
+            return bubbleMe
+        }
+        else{
+            return bubbleYou
+        }
     },
     getInitialState () {
         var meOrYouz=this.getMeOrYou();
@@ -88,11 +95,11 @@ var Message = React.createClass({
             meOrYou:meOrYouz
         };
     },
-   render(){
-       return(
+    render(){
+        return(
             <div className={this.state.meOrYou}>{this.props.message}</div>
-       )
-   }
+        )
+    }
 });
 
 export default Conversation

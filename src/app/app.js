@@ -10,26 +10,24 @@ injectTapEventPlugin();
 
 export const getRoutes = function() {
     return (<div>
-                <LoginRoute path="/login" component={LoginPage} />
-                <Route path="/404" component={FourOhFourPage}/>
-                <LogoutRoute path="/logout"/>
-                <Route path='/' component={HomePage} />
-                <HomeRoute path='/login' component={LoginPage} />
-                <Redirect from='*' to='/404' />
-            </div>
+            <LoginRoute path="/login" component={LoginPage} />
+            <Route path="/404" component={FourOhFourPage}/>
+            <LogoutRoute path="/logout"/>
+            <AuthenticatedRoute>
+                <HomeRoute path='/' component={HomePage} />
+            </AuthenticatedRoute>
+            <HomeRoute path='/login' component={LoginPage} />
+            <Redirect from='*' to='/404' />
+        </div>
     );
 };
-
+ReactStormpath.init({
+    // See the API docs for available configuration options.
+});
 // Render the main app react component into the app div.
 // For more details see: https://facebook.github.io/react/docs/top-level-api.html#react.render
 render(<Router history={browserHistory }>
         { getRoutes() }
-        </Router>,
-        document.getElementById('app')
+    </Router>,
+    document.getElementById('app')
 );
-
-//<AuthenticatedRoute>
-//    <HomeRoute path='/' component={HomePage} />
-//</AuthenticatedRoute>
-
-//<Route path='/' component={HomePage} />

@@ -20,6 +20,7 @@ import RecipientsTable from './RecipientsTable';
 import InboxTable from './InboxTable';
 import Conversation from './Chat'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import ToggleDisplay from 'react-toggle-display';
 
 const styles = {
     container: {
@@ -27,7 +28,7 @@ const styles = {
         paddingTop: 50,
     },
     headerPadding:{
-      paddingBottom:10,
+        paddingBottom:10,
     },
 
     recipientsContainer: {
@@ -104,24 +105,24 @@ var FourOhFourPage = React.createClass({
         );
     }
 });
-
 /*
-    HomePage: Container class. Contains a toolbar with
-    content that can be changed from the menu
+ HomePage: Container class. Contains a toolbar with
+ content that can be changed from the menu
  */
 var HomePage = React.createClass({
-
     getInitialState () {
         return {
-            content: <Home/>,
-            messages: []
+            content: 'home',
+            messages: [],
+            currentRecipient: '666',
+            currentRecipientMessages:[]
         };
     },
 
     addMessageToConversation(message){
         var conversations=this.state.messages;
         var conversationsPure = conversations.filter(function(convoObject){
-           return convoObject.recipient!=message.recipient
+            return convoObject.recipient!=message.recipient
         });
         var oldConversation = conversations.filter(function(convoObject){
             return convoObject.recipient===message.recipient
@@ -145,12 +146,13 @@ var HomePage = React.createClass({
         if (conversationFound===false) {
             var newMessages = this.state.messages.push(newConversation);
             this.setState({
-                messages: newMessages
+                messages: newMessages,
             });
         }
         else{
+            console.log('Conversation exists, adding message to existing conversation');
             this.setState({
-                messages:this.addMessageToConversation(newConversation)
+                messages:this.addMessageToConversation(newConversation),
             });
         }
     },
@@ -170,15 +172,9 @@ var HomePage = React.createClass({
 
     //what happens when a conversation in the inbox is clicked on
     viewConversation(recipient){
-        var findRecipientMessages = function(convoObject){
-            if (convoObject.recipient===recipient){
-                return convoObject.messages;
-            }
-        }
-        var recipientMessagesRaw = this.state.messages.filter(findRecipientMessages);
-        var recipientMessages = recipientMessagesRaw[0].messages;
         this.setState({
-            content:<Chat recipientMessages={recipientMessages} recipient={recipient}/>
+            content:'chat',
+            currentRecipient: recipient
         });
     },
 
@@ -186,18 +182,28 @@ var HomePage = React.createClass({
         //home was selected from the menu
         if (value===1){
             this.setState({
-                content: <Home/>
+                content: 'home'
             });
         }
         //inbox was selected from the menu
         if (value===2){
             this.setState({
-                content: <Inbox messages={this.state.messages} viewConversation={this.viewConversation}/>
+                content: 'inbox'
             });
         }
     },
 
     render: function() {
+        var content;
+        if (this.state.content==='home'){
+            content = <Home/>
+        }
+        if (this.state.content==='inbox'){
+            content = <Inbox messages={this.state.messages} viewConversation={this.viewConversation}/>
+        }
+        if (this.state.content==='chat'){
+            content = <Chat messages={this.state.messages} recipient={this.state.currentRecipient}/>
+        }
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
                 <div>
@@ -211,11 +217,11 @@ var HomePage = React.createClass({
                                     </DropDownMenu>
                                 </ToolbarGroup>
                                 <ToolbarGroup>
-                                        <RaisedButton label="Logout" secondary={true} href="/logout"/>
+                                    <RaisedButton label="Logout" secondary={true} href="/logout"/>
                                 </ToolbarGroup>
                             </Toolbar>
                         </Sticky>
-                        {this.state.content}
+                        {content}
                     </StickyContainer>
                 </div>
             </MuiThemeProvider>
@@ -224,10 +230,10 @@ var HomePage = React.createClass({
 });
 
 /*
-    Home: owns RecipientTable. As such, it controls
-    the props of RecipientTable. Basically, RecipientTable gathers
-    the required data and Home stores it in its own state, which
-    the RecipientTable can see through its props
+ Home: owns RecipientTable. As such, it controls
+ the props of RecipientTable. Basically, RecipientTable gathers
+ the required data and Home stores it in its own state, which
+ the RecipientTable can see through its props
  */
 var Home = React.createClass({
     getInitialState () {
@@ -278,37 +284,38 @@ var Home = React.createClass({
             }
         }
     },
-   render(){
-       return(
-           <div>
-               <ReactCSSTransitionGroup
-                   transitionName="example"
-                   transitionAppear={true}
-                   transitionEnterTimeout={500}
-                   transitionLeaveTimeout={300}
-                   transitionAppearTimeout={500}>
-                   <div style={styles.recipientsContainer}>
-                       <h1>Recipients</h1>
-                       <RecipientsTable messageSent={this.state.messageSent} recipients={this.state.recipients} addRecipient={this.addRecipient} removeRecipient={this.removeRecipient}/>
-                   </div>
-                   <div style={styles.messageContainer}>
-                       <h1 style={styles.headerPadding}>Message</h1>
-                       <textarea rows="10" cols="50" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
-                       <p></p>
-                       <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
-                   </div>
-               </ReactCSSTransitionGroup>
-           </div>
-       );
+    render(){
+        return(
+            <div>
+                <ReactCSSTransitionGroup
+                    transitionName="example"
+                    transitionAppear={true}
+                    transitionEnterTimeout={500}
+                    transitionLeaveTimeout={300}
+                    transitionAppearTimeout={500}>
+                    <div style={styles.recipientsContainer}>
+                        <h1>Recipients</h1>
+                        <RecipientsTable messageSent={this.state.messageSent} recipients={this.state.recipients} addRecipient={this.addRecipient} removeRecipient={this.removeRecipient}/>
+                    </div>
+                    <div style={styles.messageContainer}>
+                        <h1 style={styles.headerPadding}>Message</h1>
+                        <textarea rows="10" cols="50" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
+                        <p></p>
+                        <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
+                    </div>
+                </ReactCSSTransitionGroup>
+            </div>
+        );
 
-   }
+    }
 });
 
 /*
-    Inbox: Shows the recent activity on this
-    accounts sms messages
+ Inbox: Shows the recent activity on this
+ accounts sms messages
  */
 var Inbox = React.createClass({
+
     render(){
         return (
             <InboxTable viewConversation={this.props.viewConversation} messages={this.props.messages}/>
@@ -321,11 +328,12 @@ var Inbox = React.createClass({
  ability to send more messages to a recipient
  */
 var Chat = React.createClass({
-   render(){
-       return(
-           <Conversation messages={this.props.recipientMessages} recipient={this.props.recipient}/>
-       )
-   }
+
+    render(){
+        return(
+            <Conversation messages={this.props.messages} recipient={this.props.recipient}/>
+        )
+    }
 });
 
 export {LoginPage, FourOhFourPage, HomePage};
