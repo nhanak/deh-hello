@@ -20,7 +20,6 @@ import RecipientsTable from './RecipientsTable';
 import InboxTable from './InboxTable';
 import Conversation from './Chat'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import ToggleDisplay from 'react-toggle-display';
 
 const styles = {
     container: {
