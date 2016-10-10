@@ -249,9 +249,19 @@ var Home = React.createClass({
     },
 
     addRecipient(recipientNumber,resetRecipientNumber){
-        if (recipientNumber.match(/^[+][0-9]+$/)!=null) {
+
+        var number = recipientNumber.match(/\d/g);
+        number = number.join("");
+        if (number.length===11||number.length===10) {
+            var finalNumber;
+            if (number.length===11){
+                finalNumber='+'+number;
+            }
+            else{
+                finalNumber='+1'+number;
+            }
             this.setState({
-                recipients: this.state.recipients.concat(recipientNumber)
+                recipients: this.state.recipients.concat(finalNumber)
             });
             resetRecipientNumber();
         }
