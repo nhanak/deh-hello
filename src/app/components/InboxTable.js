@@ -46,7 +46,7 @@ const InboxTable = React.createClass({
                     transitionAppearTimeout={500}>
                     <div style={styles.tableContainer}>
                         <h1>Inbox</h1>
-                        <Table height="250px" multiSelectable={false} onCellClick={this.getRecipient}>
+                        <Table height="500px" multiSelectable={false} onCellClick={this.getRecipient}>
                             <TableHeader displaySelectAll={false}>
                                 <TableRow>
                                     <TableHeaderColumn>Phone Number</TableHeaderColumn>

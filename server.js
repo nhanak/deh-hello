@@ -81,11 +81,26 @@ var getMessages=function(numberOfMessages,res){
         conversations.forEach(function(conversation){
             conversation.messages.reverse();
         });
+        //remove all conversations with no in them
+        conversations=getPositiveConversations(conversations);
         res.send(conversations);
     },function(err){
         console.log('There was an error'+JSON.stringify(err));
     });
-}
+};
+
+var getPositiveConversations=function(conversations){
+    positiveConversations = [];
+    conversations.forEach(function(conversation){
+        if ((conversation.messages.length==2)&&(conversation.messages[1].body.toLowerCase()!=="no")){
+            positiveConversations.push(conversation)
+        }
+        if ((conversation.messages.length>2)){
+            positiveConversations.push(conversation)
+        }
+    });
+    return positiveConversations;
+};
 
 var getNewestMessage=function(callback){
     var messagesURI='/Accounts/'+String(TWILIO_ACCOUNT_SID)+"/Messages.json?PageSize=1&Page=0";
