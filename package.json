@@ -30,6 +30,7 @@
     "express-stormpath": "^3.1.5",
     "material-ui": "^0.15.0",
     "material-ui-table-edit": "^3.0.0",
+    "node-libcurl": "^1.0.0",
     "react": "^15.0.1",
     "react-addons-css-transition-group": "^15.3.2",
     "react-dom": "^15.0.1",

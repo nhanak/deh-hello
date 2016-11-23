@@ -7,6 +7,7 @@ var bodyParser = require('body-parser')
 var stormpath = require('express-stormpath');
 var twilio = require('twilio');
 var http = require('http').Server(app);
+var Curl = require( 'node-libcurl' ).Curl;
 
 const app = express();
 
@@ -60,33 +61,102 @@ app.post('/api/messages',stormpath.loginRequired,function(req,res){
     res.sendStatus(200);
 });
 
+var cleanNextURI=function(nextPageURI){
+    var str = nextPageURI,
+        delimiter = '/',
+        start = 2;
+    try {
+        var tokens = str.split(delimiter).slice(start);
+    }
+    catch(err) {
+        return null;
+    }
+    var result = tokens.join(delimiter);
+    return "/"+result;
+};
+
+var setupCurl=function(messagesURI){
+    var curl = new Curl();
+    curl.setOpt( Curl.option.URL, messagesURI );
+    curl.setOpt( Curl.option.USERNAME, TWILIO_ACCOUNT_SID );
+    curl.setOpt( Curl.option.PASSWORD, TWILIO_AUTH_TOKEN );
+    curl.setOpt( Curl.option.SSL_VERIFYPEER, 0 );
+    return curl;
+};
+
 var getMessages=function(numberOfMessages,res){
-    var messagesURI='/Accounts/'+String(TWILIO_ACCOUNT_SID)+"/Messages.json?PageSize="+String(numberOfMessages)+"&Page=0";
-    var requestPromise=client.request({
-        url: messagesURI,
-        method: 'GET'
-    });
-    requestPromise.then(function(data){
-        var conversations = [];
+    var messagesURI='https://api.twilio.com/2010-04-01/Accounts/'+String(TWILIO_ACCOUNT_SID)+"/Messages.json?PageSize="+String(numberOfMessages)+"&Page=0";
+    var conversations = [];
+    console.log("The URI for curling is: "+messagesURI);
+    //SETUP CURL STUFF
+    var curl = new setupCurl(messagesURI);
+    curl.on( 'end', function( statusCode, body, headers ) {
         //work with response data
+        var data = JSON.parse(body);
         data.messages.forEach(function (message) {
-            nextPageURI = message.next_page_uri;
             //check if convo exists, create it if necessary
             checkConversationExists(conversations, message);
             //add message to a conversation
             addMessageToConversation(conversations, message)
         });
-        //console.log('Conversations looks like: ');
-        //console.log(conversations);
-        conversations.forEach(function(conversation){
-            conversation.messages.reverse();
-        });
-        //remove all conversations with no in them
-        conversations=getPositiveConversations(conversations);
-        res.send(conversations);
-    },function(err){
-        console.log('There was an error'+JSON.stringify(err));
+        var nextPageURI = cleanNextURI(data.next_page_uri);
+        nextPageURI = 'https://api.twilio.com/2010-04-01'+nextPageURI;
+        getMessagesAtNextURI(conversations,nextPageURI,res);
+        this.close();
     });
+    curl.on( 'error', function(){
+        console.log("There was an error while cURLing");
+        curl.close.bind( curl );
+    } );
+    curl.perform();
+};
+
+var getMessagesAtNextURI=function(conversations, nextPageURI,res) {
+    var curl = setupCurl(nextPageURI);
+    curl.on( 'end', function( statusCode, body, headers ) {
+        //work with response data
+        try {
+            var data = JSON.parse(body);
+        }
+        catch(err){
+            console.log('We have hit the end of the pages, proof: '+body);
+            conversations.forEach(function(conversation){
+                conversation.messages.reverse();
+            });
+            this.close();
+            res.send(conversations);
+            return;
+        }
+        data.messages.forEach(function (message) {
+            //check if convo exists, create it if necessary
+            checkConversationExists(conversations, message);
+            //add message to a conversation
+            addMessageToConversation(conversations, message)
+        });
+        var nextNextPageURI = data.next_page_uri;
+        if (typeof nextNextPageURI !== null){
+            console.log("GOING TO THE NEXT PAGE!");
+            nextNextPageURI = cleanNextURI(nextNextPageURI);
+            nextNextPageURI = "https://api.twilio.com/2010-04-01"+nextNextPageURI;
+            getMessagesAtNextURI(conversations, nextNextPageURI,res);
+        }
+        else{
+            console.log("NO MORE PAGES LEFT!");
+            //Reverse conversations in the end
+            conversations.forEach(function(conversation){
+                conversation.messages.reverse();
+            });
+            //remove all conversations with no in them
+            //conversations=getPositiveConversations(conversations);
+            res.send(conversations);
+        }
+        this.close();
+    });
+    curl.on( 'error', function(){
+        console.log("There was an error while cURLing");
+        curl.close.bind( curl );
+    } );
+    curl.perform();
 };
 
 var getPositiveConversations=function(conversations){
@@ -183,9 +253,8 @@ var addMessageToConversation=function(conversations,message){
             conversation.messages.push({body: message.body, from: themOrUs, date:message.date_sent, them:recipient});
         }
     });
-
-
 };
+
 //Required Stompath path
 app.post('/me', bodyParser.json(), stormpath.loginRequired, function (req, res) {
     function writeError(message) {
