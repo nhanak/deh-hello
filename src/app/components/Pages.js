@@ -16,9 +16,9 @@ import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import { StickyContainer, Sticky } from 'react-sticky';
-import RecipientsTable from './RecipientsTable';
 import InboxTable from './InboxTable';
-import Conversation from './Chat'
+import Conversation from './Chat';
+import HomeGUI from './HomeGUI';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const styles = {
@@ -114,7 +114,9 @@ var HomePage = React.createClass({
             content: 'home',
             messages: [],
             currentRecipient: '666',
-            currentRecipientMessages:[]
+            currentRecipientMessages:[],
+            naughtyNumbersList:[],//list of people we are unable to message EVER
+            allNumbersList:[]
         };
     },
 
@@ -156,11 +158,86 @@ var HomePage = React.createClass({
         }
     },
 
+    getAllNumbersList:function(result){
+        var allNumbersList=[];
+        var number;
+        result.forEach(function (convoObject) {
+            number=convoObject.messages[0].them;
+            allNumbersList.push(number);
+        });
+        //console.log("ALLNUMBERSLIST IS: "+allNumbersList);
+        return allNumbersList;
+
+    },
+    getNaughtyNumbersList:function(result){
+        console.log("Entered getNaughtyNumbersList!");
+        var _naughtyNumberList = [];
+        result.forEach(function (convoObject) {
+            //console.log("ConvoObject looks like: " + JSON.stringify(convoObject) + typeof(convoObject));
+            var naughtyBool = false;
+            var naughtyNumber;
+            //if we have only ever messaged them
+            if (convoObject.messages.length<2){
+                naughtyBool=true;
+                naughtyNumber=convoObject.messages[0].them;
+            }
+            else {
+                //if theres more than one message but they have said no at some point
+                convoObject.messages.forEach(function (message) {
+                    if (message.body.toLowerCase() === "no") {
+                        naughtyBool = true;
+                        naughtyNumber = message.them;
+                    }
+                });
+            }
+            if (naughtyBool) {
+                console.log("ADDING NAUGHTY NUMBER: " + naughtyNumber);
+                _naughtyNumberList.push(naughtyNumber);
+            }
+        });
+        return _naughtyNumberList;
+
+    },
+
+    removeMessagesWithNaughtyNumbers(conversations,_naughtyNumberList){
+        console.log("Removing messages with naughty numbers!");
+        var messagesWithoutNaughtyNumbers=[];
+        console.log("NaughtyNumberList is"+_naughtyNumberList);
+        conversations.forEach(function(convoObject) {
+            console.log("Checking number: "+convoObject.messages[0].them);
+            if (_naughtyNumberList.indexOf(convoObject.messages[0].them)>=0) {
+                console.log('REMOVED CONVO OBJECT');//+JSON.stringify(convoObject));
+            }
+            else{
+                console.log('KEPT CONVO OBJECT');//+JSON.stringify(convoObject));
+                messagesWithoutNaughtyNumbers.push(convoObject);
+            }
+        });
+        return messagesWithoutNaughtyNumbers;
+    },
+
+    addToAllNumbersList(numbersList){
+      this.setState({
+         allNumbersList:this.state.allNumbersList.concat(numbersList),
+      });
+    },
+
     componentDidMount: function() {
+        //what happens when the server says we have a new message
         socket.on('new message', this.handleNewMessage);
+        //get all messages
         this.serverRequest = $.get('/api/messages', function (result) {
+            window.alert("Got messages!");
+            //get numbers we are never allowed to message ever again
+            var naughtyNumbers = this.getNaughtyNumbersList(result);
+            //get list of all numbers we have ever texted
+            var _allNumbersList = this.getAllNumbersList(result);
+            //get list of pertinent messages
+            var cleanedMessages = this.removeMessagesWithNaughtyNumbers(result,naughtyNumbers);
             this.setState({
-                messages:result
+                messages: cleanedMessages,
+                naughtyNumbersList:naughtyNumbers,
+                allNumbersList:_allNumbersList
             });
         }.bind(this));
     },
@@ -187,7 +264,7 @@ var HomePage = React.createClass({
         //inbox was selected from the menu
         if (value===2){
             this.setState({
-                content: 'inbox'
+                content:'inbox'
             });
         }
     },
@@ -195,7 +272,7 @@ var HomePage = React.createClass({
     render: function() {
         var content;
         if (this.state.content==='home'){
-            content = <Home/>
+            content = <Home allNumbersList={this.state.allNumbersList} addToAllNumbersList={this.addToAllNumbersList}/>
         }
         if (this.state.content==='inbox'){
             content = <Inbox messages={this.state.messages} viewConversation={this.viewConversation}/>
@@ -229,93 +306,13 @@ var HomePage = React.createClass({
 });
 
 /*
- Home: owns RecipientTable. As such, it controls
- the props of RecipientTable. Basically, RecipientTable gathers
- the required data and Home stores it in its own state, which
- the RecipientTable can see through its props
+ Home: Allows you to send mass messages
  */
 var Home = React.createClass({
-    getInitialState () {
-        return {
-            recipients:[],
-            message:'',
-        };
-    },
-
-    getDefaultProps() {
-        return {
-            handleChange: (event, index, value) => this.setState({value}),
-        }
-    },
-
-    addRecipient(recipientNumber,resetRecipientNumber){
-
-        var number = recipientNumber.match(/\d/g);
-        number = number.join("");
-        if (number.length===11||number.length===10) {
-            var finalNumber;
-            if (number.length===11){
-                finalNumber='+'+number;
-            }
-            else{
-                finalNumber='+1'+number;
-            }
-            this.setState({
-                recipients: this.state.recipients.concat(finalNumber)
-            });
-            resetRecipientNumber();
-        }
-    },
-
-    removeRecipient(index,amountRemoved){
-        this.state.recipients.splice(index-amountRemoved,1);
-    },
-
-    handleMessageChange(evt){
-        this.setState({
-            message: evt.target.value
-        });
-    },
-
-    sendMessage(){
-        if (this.state.message.length!==0){
-            if(this.state.recipients.length!==0) {
-                var twilioMessage={
-                    message: this.state.message,
-                    recipients:this.state.recipients
-                };
-                jQuery.post('/api/messages',twilioMessage);
-                alert('Message succesfully sent!');
-                this.setState({
-                    recipients: [],
-                    message: ''
-                })
-            }
-        }
-    },
     render(){
-        return(
-            <div>
-                <ReactCSSTransitionGroup
-                    transitionName="example"
-                    transitionAppear={true}
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={300}
-                    transitionAppearTimeout={500}>
-                    <div style={styles.recipientsContainer}>
-                        <h1>Recipients</h1>
-                        <RecipientsTable messageSent={this.state.messageSent} recipients={this.state.recipients} addRecipient={this.addRecipient} removeRecipient={this.removeRecipient}/>
-                    </div>
-                    <div style={styles.messageContainer}>
-                        <h1 style={styles.headerPadding}>Message</h1>
-                        <textarea rows="10" cols="50" placeholder="Enter message" onChange={this.handleMessageChange} value={this.state.message}/>
-                        <p></p>
-                        <RaisedButton label="Send" secondary={true} onTouchTap={this.sendMessage} />
-                    </div>
-                </ReactCSSTransitionGroup>
-            </div>
+        return (
+            <HomeGUI allNumbersList={this.props.allNumbersList} addToAllNumbersList={this.props.addToAllNumbersList}/>
         );
-
     }
 });
 
@@ -324,7 +321,6 @@ var Home = React.createClass({
  accounts sms messages
  */
 var Inbox = React.createClass({
-
     render(){
         return (
             <InboxTable viewConversation={this.props.viewConversation} messages={this.props.messages}/>

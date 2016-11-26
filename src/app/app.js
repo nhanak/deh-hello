@@ -1,13 +1,13 @@
 import React from 'react';
 import {render} from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import {LoginPage, HomePage, FourOhFourPage, ChatTestPage} from './components/Pages'; // Our custom react component
+import {LoginPage, HomePage, FourOhFourPage} from './components/Pages'; // Our custom react component
 import { Route, Link, browserHistory, Redirect} from 'react-router';//react-routers so we can do routes
+import createHistory from 'history/createBrowserHistory'
 import ReactStormpath, { Router, AuthenticatedRoute, LoginRoute, HomeRoute, LogoutRoute,UserProfileForm } from 'react-stormpath'; //Stormpath
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
-
 export const getRoutes = function() {
     return (<div>
             <LoginRoute path="/login" component={LoginPage} />
